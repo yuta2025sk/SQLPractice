@@ -37,17 +37,24 @@ public class MySQLDatabase {
                     + "('Tesla', 'Model 3', 2021, 35000.00), "
                     + "('BMW', '3 Series', 2020, 40000.00), "
                     + "('Audi', 'A4', 2021, 45000.00), "
-                    + "('Mercedes', 'C-Class', 2019, 62000.00), "
+                    + "('Mercedes', 'C-Class', 2019, 72000.00), "
                     + "('Nissan', 'Altima', 2018, 16000.00), "
                     + "('Chevrolet', 'Malibu', 2020, 20000.00), "
-                    + "('Hyundai', 'Elantra', 2004, 19000.00)";
+                    + "('Hyundai', 'Elantra', 1998, 19000.00)";
+         
             stmt.executeUpdate(insertSQL);
+            
+            String deleteSQL = "DELETE FROM cars WHERE id NOT IN ("
+                    + "SELECT min_id FROM ("
+                    + "SELECT MIN(id) AS min_id FROM cars GROUP BY make, model, year, price"
+                    + ") AS tmp)";
+            stmt.executeUpdate(deleteSQL);
 
             // 条件付きデータ検索 1回目
-            executeQuery(stmt, "SELECT * FROM cars WHERE price > 60000.00");
+            executeQuery(stmt, "SELECT * FROM cars WHERE price > 70000.00");
 
             // 条件付きデータ検索 2回目
-            executeQuery(stmt, "SELECT * FROM cars WHERE year <= 2005");
+            executeQuery(stmt, "SELECT * FROM cars WHERE year <= 2000");
 
         } catch (SQLException e) {
             e.printStackTrace();
